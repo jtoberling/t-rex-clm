@@ -65,7 +65,11 @@ export class Runner {
    * defined in Runner.normalConfig and Runner.slowConfig.
    */
   static config = {
-    AI_ACTION_PROXIMITY_THRESHOLD: 140,
+    // Widened from 140 so the local CLM has enough time to answer before the
+    // obstacle reaches the action line; a narrow window made the CLM time out
+    // (and, before the controller fix, fall back to a hardcoded jump instead
+    // of measuring the model). ~0.5s reaction window at base speed.
+    AI_ACTION_PROXIMITY_THRESHOLD: 300,
     AUDIOCUE_PROXIMITY_THRESHOLD: 190,
     AUDIOCUE_PROXIMITY_THRESHOLD_MOBILE_A11Y: 250,
     BG_CLOUD_SPEED: 0.2,

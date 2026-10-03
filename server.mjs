@@ -36,22 +36,17 @@ const JUMP_PROFILES = ['short', 'full'];
 // with POST /api/prompt — no restart needed; the running server applies the new
 // config on the next decision request.
 //
-// safe_by_path maps the game-engine flight_path to the action the engine deems
-// safe — the browser-side stand-in for the physics planner's labels in
-// examples/t_rex/trex/backends.py. It encodes which candidate is genuinely
-// safe/unsafe so the model can pick the right one instead of guessing.
+// Kept deliberately neutral: each action gets only its plain description, with
+// NO flight_path -> action mapping and NO "safe"/"Best" pre-labeling. We never
+// steer the model toward a pre-chosen action, so the CLM picks genuinely from
+// the state — that neutrality is what makes the recorded answer a real
+// measurement instead of us confirming a hardcoded rule.
 const DEFAULT_MANEUVER_PROMPT = {
   instructions: 'Choose the best safe action for the dinosaur.',
   action_notes: {
     jump: 'Jumps over the obstacle and clears it',
     duck: 'Crouches under the obstacle and passes',
     keep_running: 'Continues running without jumping or ducking',
-  },
-  safe_by_path: {
-    ground_hazard: 'jump',
-    blocks_running_and_ducking: 'jump',
-    blocks_running_only: 'duck',
-    clears_running_dinosaur: 'keep_running',
   },
 };
 
@@ -66,34 +61,28 @@ function isValidPrompt(p) {
   for (const a of ACTIONS) {
     if (typeof notes[a] !== 'string') return false;
   }
-  const byPath = p.safe_by_path ?? {};
-  if (typeof byPath !== 'object' || Array.isArray(byPath)) return false;
-  for (const k of Object.keys(byPath)) {
-    if (!ACTIONS.includes(byPath[k])) return false;
-  }
   return true;
 }
 
 const PROMPT_HELP_TEXT =
-  'Edit the JSON, then hit Apply. The action that is genuinely safe for the incoming ' +
-  'obstacle gets labeled "Best." — set safe_by_path to what the dinosaur must actually do.';
+  'Edit the JSON, then hit Apply. Describe each action neutrally; the model decides ' +
+  'based on the flight_path and obstacle in the state — do NOT pre-label any action ' +
+  'as "safe"/"Best", that would defeat the measurement.';
 
 /**
- * Build the maneuver question from the current prompt config. Each candidate gets a
- * Safe / Unsafe ... Collision label with the genuinely-safe action marked "Best." This
- * mirrors examples/t_rex/trex/backends.py::build_question exactly, so the model ranks
- * the candidates the same way it does in the benchmark. The action is still chosen by
- * the model by cosine similarity — nothing is forced into the executed action.
+ * Build the maneuver question from the current prompt config. Each candidate
+ * gets only its plain description — no action is pre-labelled "Safe"/"Best" or
+ * "Unsafe"/"Collision". That deliberate neutrality is what makes the CLM's pick a
+ * real measurement: the state already carries the flight_path, kind, group, speed
+ * and motion, so the model reasons about the situation itself instead of us
+ * steering it to a pre-chosen action. The chosen action is decided purely by
+ * cosine similarity — nothing is forced into the executed action.
  */
 function buildManeuverQuestion(flightPath) {
   const p = MANEUVER_PROMPT;
-  const safe = p.safe_by_path?.[flightPath] ?? 'jump';
   const criteria = {};
   for (const action of ACTIONS) {
-    criteria[action] =
-      action === safe
-        ? `Safe. ${(p.action_notes?.[action] ?? '').toString()}. Best.`
-        : `Unsafe. ${(p.action_notes?.[action] ?? '').toString()}. Collision.`;
+    criteria[action] = (p.action_notes?.[action] ?? '').toString();
   }
   return {
     type: 'choice',
@@ -190,9 +179,7 @@ export function createApp() {
           message:
             'Prompt must have: instructions (string), action_notes (object with ' +
             ACTIONS.join(', ') +
-            ' as strings), safe_by_path (object mapping flight_path -> one of ' +
-            ACTIONS.join(', ') +
-            ').',
+            ' as strings).',
           retryable: false,
         },
       });
@@ -200,7 +187,6 @@ export function createApp() {
     MANEUVER_PROMPT = {
       instructions: p.instructions,
       action_notes: p.action_notes,
-      safe_by_path: p.safe_by_path,
     };
     res.json({ default: DEFAULT_MANEUVER_PROMPT, current: MANEUVER_PROMPT, help: PROMPT_HELP_TEXT });
   });

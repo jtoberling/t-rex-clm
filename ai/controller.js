@@ -17,6 +17,8 @@ export class AiController {
     this.onUpdate = onUpdate;
     this.now = now;
     this.enabled = false;
+    this.warming = false;
+    this.hasWarmed = false;
     this.autoRestart = false;
     this.frameId = 0;
     this.restartTimer = 0;
@@ -67,11 +69,48 @@ export class AiController {
       this.cancelPlans();
       this.runner.setDuck(false);
       clearTimeout(this.restartTimer);
+      this.warming = false;
       this.latestStatus = { type: 'idle', message: 'Manual control' };
     } else {
+      // Prime the CLM's embedding cache with a throwaway call before the first
+      // real obstacle, so its first answer isn't slowed by the cold-start cost.
+      if (!this.warming && !this.hasWarmed) {
+        this.warming = true;
+        this.warmupClm();
+      }
       this.latestStatus = { type: 'ready', message: 'AI control ready' };
     }
     this.emit();
+  }
+
+  /**
+   * Fire-and-forget warmup request. The answer is discarded on purpose: it only
+   * forces the CLM to run its first forward pass so subsequent real answers do
+   * not pay the cold-start latency. Kept off the animation frame so it can't
+   * race the decision requests that follow.
+   */
+  async warmupClm() {
+    try {
+      await this.fetchImpl('/api/decision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          runId: 'warmup',
+          obstacleId: 'warmup',
+          state: {
+            speed: 6,
+            speedMode: 'normal',
+            dinosaurMotion: 'running',
+            obstacle: { kind: 'small_cactus', group_size: 'single', flight_path: 'ground_hazard' },
+          },
+        }),
+      });
+    } catch {
+      // A failed warmup is harmless; the next real answer will warm it anyway.
+    } finally {
+      this.hasWarmed = true;
+      this.warming = false;
+    }
   }
 
   setAutoRestart(enabled) {
@@ -322,20 +361,21 @@ export class AiController {
         continue;
       }
 
-      // Within the action window. If the model never answered in time, apply a
-      // safe fallback derived from the obstacle type, so the dino never idles
-      // at the line and gets hit by the obstacle it failed to answer for.
+      // Within the action window. If the model never answered in time, record it
+      // as a timeout — not a hardcoded action. The whole point of this app is to
+      // measure the CLM, so a slow answer must show up as a timeout, not be
+      // overwritten by a rule the model never saw. The dino stays put (and may
+      // be hit) — that is the honest measurement of the CLM being too slow.
       if (plan.status === 'pending') {
         plan.abortController.abort();
         this.stats.late += 1;
-        const fallback = this.safeFallbackAction(plan.obstacle);
         const latencyMs = Math.round(this.now() - plan.requestedAt);
-        plan.decision = { action: fallback, effectiveJumpProfile: 'full', latencyMs };
+        plan.decision = { action: null, timedOut: true, latencyMs };
         this.latestDecision = plan.decision;
-        plan.status = 'ready';
+        plan.status = 'timeout';
         this.latestStatus = {
-          type: 'acted',
-          message: `Fallback: ${fallback.replaceAll('_', ' ')}`,
+          type: 'timeout',
+          message: `CLM timed out after ${latencyMs} ms`,
         };
       }
 
