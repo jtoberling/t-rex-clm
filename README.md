@@ -53,7 +53,7 @@ In the browser, click **"AI mode"** to enable the model. The dinosaur can also b
 
 ## Related & credits
 
-- This demo's game assets come from the offline clone in `resources/dino_game` (BSD-3).
+- This demo's game assets come from the offline clone in `resources/dino_game` (BSD-3, see `LICENSE`).
 - The driving model is [**CLM (Contrastive Language Model)**](https://github.com/Contrastive-LM/CLM)
   (CLM-8B). The `gx10` CLM "System One" endpoint answers the two per-obstacle
   questions (maneuver + jump profile) returned by `Engine.answer`.
