@@ -58,6 +58,7 @@ input {
 .prompt-editor {
   display: grid;
   gap: 10px;
+  grid-area: prompt;
 }
 
 .prompt-editor textarea {
@@ -268,6 +269,7 @@ footer {
     );
   grid-template-areas:
     'heading controls action'
+    'prompt prompt prompt'
     'telemetry telemetry telemetry';
   column-gap: 20px;
   padding: 22px;
