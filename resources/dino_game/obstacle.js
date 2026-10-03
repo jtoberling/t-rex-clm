@@ -224,8 +224,10 @@ export class Obstacle {
 
 /**
  * Coefficient for calculating the maximum gap.
+ * Kept above 1 so consecutive obstacles vary in spacing (a value of 1 would
+ * make every gap exactly minGap and the run would repeat mechanically).
  */
-Obstacle.MAX_GAP_COEFFICIENT = 1.5;
+Obstacle.MAX_GAP_COEFFICIENT = 2.0;
 
 /**
  * Maximum obstacle grouping count.
