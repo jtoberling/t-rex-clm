@@ -10,9 +10,16 @@
 // sees the API key — this local server does the HTTP round trip.
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
 import express from 'express';
 
 const rootDirectory = path.dirname(fileURLToPath(import.meta.url));
+
+// Load .env from this module's own directory so it is picked up regardless of
+// the current working directory or the Node version (the --env-file CLI flag
+// is cwd-relative and only available from Node 18.3+). dotenv never overrides
+// values already present in process.env, so shell exports still take precedence.
+dotenv.config({ path: path.join(rootDirectory, '.env') });
 
 // --- Configuration (env vars, with sensible defaults) ----------------------
 const CLM_BASE_URL = process.env.CLM_BASE_URL || 'http://127.0.0.1:8700';

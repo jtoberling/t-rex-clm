@@ -50,4 +50,4 @@ fi
 # Start the server. The SSH tunnel to gx10 (ssh -L 8700:localhost:8700 user@gx10)
 # must already be running; adjust CLM_BASE_URL in .env if it differs.
 echo "Starting server at http://127.0.0.1:3000 (Ctrl+C to stop)..."
-exec node --env-file=.env server.mjs
+exec node server.mjs

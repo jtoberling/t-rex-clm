@@ -5,14 +5,15 @@
   "main": "server.mjs",
   "description": "Chrome T-Rex browser game driven by a local Contrastive Language Model (CLM).",
   "scripts": {
-    "start": "node --env-file=.env server.mjs",
-    "dev": "node --watch --env-file=.env server.mjs"
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "license": "BSD-3-Clause",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "5.2.1"
   }
 }
