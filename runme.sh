@@ -8,7 +8,7 @@
 #   1. Ensures Node.js is on PATH (best effort).
 #   2. Installs npm dependencies if node_modules is missing.
 #   3. Copies .env.example to .env if no .env exists (edit it for your CLM host/key).
-#   4. Starts the server: node --env-file=.env server.mjs
+#   4. Starts the server: node server.mjs (dotenv loads .env from this dir)
 
 set -euo pipefail
 
