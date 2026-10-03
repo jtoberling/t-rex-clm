@@ -75,11 +75,8 @@ function isValidPrompt(p) {
 }
 
 const PROMPT_HELP_TEXT =
-  'JSON: instructions (string), action_notes.{jump,duck,keep_running} (prose), ' +
-  'safe_by_path.{flight_path -> one of ' + ACTIONS.join(', ') + '}. The action that is ' +
-  'safe for a given obstacle gets the label "Safe. {notes}. Best." and the others get ' +
-  '"Unsafe. {notes}. Collision." — the exact vocabulary the model was trained on, so it ' +
-  'ranks them the same way it does in the benchmark. Save to apply; "Reset" to restore defaults.';
+  'Edit the JSON, then hit Apply. The action that is genuinely safe for the incoming ' +
+  'obstacle gets labeled "Best." — set safe_by_path to what the dinosaur must actually do.';
 
 /**
  * Build the maneuver question from the current prompt config. Each candidate gets a
