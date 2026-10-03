@@ -1,0 +1,29 @@
+/* ------ IMPORTANT CSS TO ENABLE LIGHT AND DARK THEME IN TREX GAME ----- */
+
+.inverted {
+  background-color: #fff;
+  filter: invert(1);
+}
+
+.inverted body {
+  background-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .icon {
+    filter: invert(1);
+  }
+
+  .runner-canvas {
+    filter: invert(1);
+  }
+
+  .inverted {
+    background-color: white;
+    filter: invert(0);
+  }
+
+  .inverted body {
+    background-color: black;
+  }
+}

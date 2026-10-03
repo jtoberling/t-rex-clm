@@ -1,0 +1,55 @@
+<svg width="338" height="56" viewBox="0 0 338 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="4" width="330" height="2" fill="#7A7A7A"/>
+<rect x="4" y="50" width="330" height="2" fill="#7A7A7A"/>
+<rect x="4" y="52" width="330" height="4" fill="#7A7A7A"/>
+<rect x="4" y="2" width="52" height="2" transform="rotate(90 4 2)" fill="#7A7A7A"/>
+<rect x="2" y="4" width="48" height="2" transform="rotate(90 2 4)" fill="#7A7A7A"/>
+<rect x="336" y="2" width="52" height="2" transform="rotate(90 336 2)" fill="#7A7A7A"/>
+<rect x="338" y="4" width="48" height="2" transform="rotate(90 338 4)" fill="#7A7A7A"/>
+<path d="M71 20H73V24H71V26H65V34H63V18H71V20ZM71 20H65V24H71V20ZM77.4 32H83.4V34H75.4V18H77.4V32ZM93.8 20H95.8V34H93.8V25.875H87.8V34H85.8V20H87.8V18H93.8V20ZM93.8 23.875V20H87.8V23.875H93.8ZM100.2 23H98.2V18H100.2V23ZM102.2 25H100.2V23H102.2V25ZM104.2 25V34H102.2V25H104.2ZM106.2 23H104.2V25H106.2V23ZM106.2 23H108.2V18H106.2V23ZM126 20H122V34H120V20H116V18H126V20ZM130.4 18V23.875H136.4V18H138.4V34H136.4V25.875H130.4V34H128.4V18H130.4ZM148.8 20H142.8V23.875H147.8V25.875H142.8V32H148.8V34H140.8V18H148.8V20ZM158.6 20H156.6V32H158.6V20ZM164.6 20V18H158.6V20H164.6ZM164.6 20H166.6V32H164.6V20ZM164.6 20V32V20ZM164.6 32V34H158.6V32H164.6ZM171 20H173V18H169V34H171V20ZM175 22V20H173V22H175ZM177 30H175V22H177V30ZM179 32V30H177V32H179ZM179 32H181V18H183V34H179V32ZM193.4 18V20H187.4V32H193.4V34H185.4V18H193.4ZM193.4 32H195.4V30H193.4V32ZM193.4 20H195.4V22H193.4V20ZM199.8 18V23.875H205.8V18H207.8V34H205.8V25.875H199.8V34H197.8V18H199.8ZM218.2 20H220.2V34H218.2V25.875H212.2V34H210.2V20H212.2V18H218.2V20ZM218.2 23.875V20H212.2V23.875H218.2ZM232.6 18V20H228.6V32H232.6V34H222.6V32H226.6V20H222.6V18H232.6ZM237 20H239V18H235V34H237V20ZM241 22V20H239V22H241ZM243 30H241V22H243V30ZM245 32V30H243V32H245ZM245 32H247V18H249V34H245V32ZM264.8 20H266.8V32H264.8V34H256.8V18H264.8V20ZM264.8 20H258.8V32H264.8V20ZM279.2 18V20H275.2V32H279.2V34H269.2V32H273.2V20H269.2V18H279.2ZM283.6 20H285.6V18H281.6V34H283.6V20ZM287.6 22V20H285.6V22H287.6ZM289.6 30H287.6V22H289.6V30ZM291.6 32V30H289.6V32H291.6ZM291.6 32H293.6V18H295.6V34H291.6V32ZM300 20H298V32H300V20ZM306 20V18H300V20H306ZM306 20H308V32H306V20ZM306 20V32V20ZM306 32V34H300V32H306Z" fill="#7A7A7A"/>
+<g clip-path="url(#clip0_4398_6391)">
+<g clip-path="url(#clip1_4398_6391)">
+<rect x="48.9043" y="21.1831" width="1.60305" height="7.0534" fill="#7B7B7B"/>
+<rect x="47.9424" y="12.8472" width="0.961827" height="8.33584" fill="#7B7B7B"/>
+<rect x="45.377" y="11.8853" width="2.56487" height="0.961827" fill="#7B7B7B"/>
+<rect x="44.416" y="12.8472" width="0.961827" height="6.09157" fill="#7B7B7B"/>
+<rect x="40.8887" y="18.939" width="5.77096" height="0.961827" fill="#7B7B7B"/>
+<rect x="40.8887" y="12.8472" width="0.961827" height="6.09157" fill="#7B7B7B"/>
+<rect x="38.3242" y="11.8853" width="2.56487" height="0.961827" fill="#7B7B7B"/>
+<rect x="37.3623" y="12.8472" width="0.961827" height="8.33584" fill="#7B7B7B"/>
+<rect x="36.0801" y="21.1831" width="1.28244" height="7.0534" fill="#7B7B7B"/>
+<rect x="33.835" y="25.6714" width="2.24426" height="1.28244" fill="#7B7B7B"/>
+<rect x="32.5527" y="26.9541" width="1.28244" height="1.28244" fill="#7B7B7B"/>
+<rect x="30.3086" y="28.2363" width="2.24426" height="1.28244" fill="#7B7B7B"/>
+<rect x="31.2705" y="29.5186" width="1.28244" height="7.37401" fill="#7B7B7B"/>
+<rect x="29.0264" y="29.5186" width="1.28244" height="2.24426" fill="#7B7B7B"/>
+<rect x="29.9883" y="31.7627" width="1.28244" height="1.28244" fill="#7B7B7B"/>
+<rect x="32.5527" y="36.5723" width="2.56487" height="1.28244" fill="#7B7B7B"/>
+<rect x="34.7969" y="34.0073" width="4.80914" height="1.28244" fill="#7B7B7B"/>
+<rect x="33.835" y="35.2896" width="2.56487" height="1.28244" fill="#7B7B7B"/>
+<rect x="37.042" y="35.2896" width="2.88548" height="0.961827" fill="#7B7B7B"/>
+<rect x="38.3242" y="36.2515" width="2.56487" height="1.60305" fill="#7B7B7B"/>
+<rect x="40.8887" y="32.7246" width="1.28244" height="2.56487" fill="#7B7B7B"/>
+<rect x="40.8887" y="35.2896" width="2.24426" height="1.28244" fill="#7B7B7B"/>
+<rect x="41.8506" y="36.5723" width="3.5267" height="0.961827" fill="#7B7B7B"/>
+<rect x="44.0947" y="30.8013" width="1.28244" height="5.77096" fill="#7B7B7B"/>
+<rect x="39.6064" y="29.5186" width="8.01523" height="1.28244" fill="#7B7B7B"/>
+<rect x="47.6221" y="28.2363" width="1.60305" height="1.28244" fill="#7B7B7B"/>
+<rect x="37.3623" y="28.2363" width="1.28244" height="1.28244" fill="#7B7B7B"/>
+<rect x="45.6982" y="21.8242" width="0.961827" height="3.20609" fill="#7B7B7B"/>
+<rect x="41.5303" y="21.8242" width="0.961827" height="3.20609" fill="#7B7B7B"/>
+<rect x="44.0947" y="25.6714" width="0.961827" height="0.641218" fill="#7B7B7B"/>
+<rect x="45.6973" y="21.8247" width="0.961827" height="3.20609" fill="#7B7B7B"/>
+<rect x="41.5293" y="21.8247" width="0.961827" height="3.20609" fill="#7B7B7B"/>
+<rect x="44.0938" y="25.6719" width="0.961827" height="0.641218" fill="#7B7B7B"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_4398_6391">
+<rect width="28.6426" height="28.8548" fill="white" transform="translate(26 9)"/>
+</clipPath>
+<clipPath id="clip1_4398_6391">
+<rect width="21.4808" height="25.9693" fill="white" transform="translate(29.0254 11.8857)"/>
+</clipPath>
+</defs>
+</svg>
