@@ -65,11 +65,13 @@ export class Runner {
    * defined in Runner.normalConfig and Runner.slowConfig.
    */
   static config = {
-    // Widened from 140 so the local CLM has enough time to answer before the
-    // obstacle reaches the action line; a narrow window made the CLM time out
-    // (and, before the controller fix, fall back to a hardcoded jump instead
-    // of measuring the model). ~0.5s reaction window at base speed.
-    AI_ACTION_PROXIMITY_THRESHOLD: 300,
+    // Reaction window for the CLM decision. Originally widened to 300 so the
+    // local model had time to answer, but that caused the dino to jump TOO EARLY
+    // (well before the optimal moment). The reference impl (examples/t_rex)
+    // uses dynamic thresholds based on measured latency; for now, 180px gives
+    // ~0.3s at base speed — tight enough to land the jump at the right spot
+    // while still leaving room for the CLM to finish its round-trip.
+    AI_ACTION_PROXIMITY_THRESHOLD: 180,
     AUDIOCUE_PROXIMITY_THRESHOLD: 190,
     AUDIOCUE_PROXIMITY_THRESHOLD_MOBILE_A11Y: 250,
     BG_CLOUD_SPEED: 0.2,
