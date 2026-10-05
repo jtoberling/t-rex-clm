@@ -1,6 +1,6 @@
 export const REFERENCE_OBSTACLE_WIDTH = 17;
 export const SHORT_JUMP_LEAD_RATIO = 0.82;
-export const OBSTACLE_CENTERING_RATIO = 0.5;
+export const OBSTACLE_CENTERING_RATIO = 0.75;
 
 /**
  * Convert the original pixel threshold into a constant-time approach window.
