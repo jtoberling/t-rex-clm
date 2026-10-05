@@ -1,6 +1,6 @@
 import { buildDecisionState, isSupportedObstacle } from './game-state.js';
 
-export const CONFIDENCE_THRESHOLD = 0.5;
+export const CONFIDENCE_THRESHOLD = 0.25;
 export const AUTO_RESTART_DELAY = 1200;
 
 export class AiController {

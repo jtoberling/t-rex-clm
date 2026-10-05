@@ -36,17 +36,22 @@ const JUMP_PROFILES = ['short', 'full'];
 // with POST /api/prompt — no restart needed; the running server applies the new
 // config on the next decision request.
 //
-// Kept deliberately neutral: each action gets only its plain description, with
-// NO flight_path -> action mapping and NO "safe"/"Best" pre-labeling. We never
-// steer the model toward a pre-chosen action, so the CLM picks genuinely from
-// the state — that neutrality is what makes the recorded answer a real
-// measurement instead of us confirming a hardcoded rule.
+// Tuned empirically against the CLM (see curl probes in /tmp/clm_test/):
+//  - Game-native language ("keypress", "dodges") beats abstract phrasing.
+//  - Criteria describing GEOMETRIC RELATIONSHIP (ABOVE / BELOW / intersects
+//    lane) beat intent-based descriptions ("safe", "best").
+//  - "Growing UP FROM THE GROUND" in the state kills the duck-under-cactus
+//    attractor that plagued earlier iterations.
+//  - "Way up in the sky, nowhere near the dino" triggers keep_running for
+//    high-altitude pteros.
 const DEFAULT_MANEUVER_PROMPT = {
-  instructions: 'Choose the best safe action for the dinosaur.',
+  instructions:
+    'Chrome T-Rex: the dino runs right automatically. Pick the keypress that dodges the obstacle.',
   action_notes: {
-    jump: 'Jumps over the obstacle and clears it',
-    duck: 'Crouches under the obstacle and passes',
-    keep_running: 'Continues running without jumping or ducking',
+    jump: 'Up arrow - dino becomes airborne for a moment, tracing an arc that places it ABOVE the obstacle mid-flight',
+    duck: 'Down arrow - dino flattens to the ground, reducing its height so it fits BELOW hanging obstacles while staying on the ground',
+    keep_running:
+      'No key - dino stays at normal running height on the ground, only works when the obstacle does not intersect the running lane at all',
   },
 };
 
@@ -93,38 +98,54 @@ function buildManeuverQuestion(flightPath) {
 
 const JUMP_PROFILE_QUESTION = {
   type: 'choice',
-  instructions:
-    'Assume the safest maneuver is to jump. Choose the jump trajectory that ' +
-    'best clears the target obstacle.',
+  instructions: 'With up-arrow pressed, tap vs hold changes arc size:',
   criteria: {
     short:
-      'Use only for one small cactus. Do not use for a large cactus, ' +
-      'grouped cacti, or a pterodactyl.',
+      'Quick tap - compact arc clearing one small obstacle, tops out around 25px',
     full:
-      'Use for every large cactus, grouped cactus, pterodactyl, or uncertain ' +
-      'obstacle.',
+      'Longer hold - extended arc clearing tall obstacles, wide pairs, or birds, tops out 40px+',
   },
 };
 
-function buildState(body) {
-  const s = body?.state || {};
-  const kind = String(s.obstacle?.kind ?? 'small_cactus').replaceAll('_', ' ');
-  const motion = String(s.dinosaurMotion ?? 'running').replaceAll('_', ' ');
+function buildState(state) {
+  const kind = String(state?.obstacle?.kind ?? 'small_cactus');
+  const group = String(state?.obstacle?.group ?? 'single');
+  const flightPath = String(state?.obstacle?.flightPath ?? '');
   return {
-    objective: 'Avoid the target obstacle and keep the dinosaur alive.',
-    current_speed: s.speed,
-    speed_mode: s.speedMode,
-    dinosaur_motion_when_observed: motion,
-    target_obstacle: {
-      kind,
-      group_size: String(s.obstacle?.group ?? 'single'),
-      flight_path: s.obstacle?.flightPath,
-    },
-    timing_policy:
-      'The shown dinosaur motion is only what it was doing when the ' +
-      'obstacle was first observed; the browser finishes it and executes the ' +
-      'chosen maneuver at the safe time.',
+    obstacle_scene: buildSceneText(kind, group, flightPath),
   };
+}
+
+/**
+ * Translate the structured obstacle descriptor into the narrative scene text
+ * that the CLM actually discriminates on. Empirically tuned:
+ *  - "UP FROM THE GROUND" anchors cacti to the ground (prevents duck-attractor)
+ *  - "wide pair" signals full-arc for double/triple groups
+ *  - "VERY LOW, almost touching the ground" distinguishes low ptero from mid
+ *  - "WAY UP HIGH, far above the dino" triggers keep_running for high ptero
+ */
+function buildSceneText(kind, group, flightPath) {
+  const isGroup = group !== 'single';
+
+  switch (kind) {
+    case 'large_cactus':
+      return isGroup
+        ? 'Giant cacti growing UP FROM THE GROUND side by side. A wide, very tall wall. A quick tap will not clear their tops. Needs the full extended arc.'
+        : 'Giant cactus growing UP FROM THE GROUND. Very tall and thick. A quick tap won\'t clear its top. Needs the full extended arc.';
+    case 'pterodactyl':
+      switch (flightPath) {
+        case 'clears_running_dinosaur':
+          return 'Bird hovering way up in the sky, nowhere near the dino. The dino can run straight underneath without any danger.';
+        case 'blocks_running_and_ducking':
+          return 'Bird skimming VERY LOW, almost touching the ground. Its wingtips drag along the dirt surface. No gap underneath - not even for a ducking dino. Only the air ABOVE its wings is empty.';
+        default: // blocks_running_only (mid altitude)
+          return 'Bird floating MID AIR at head height. It blocks the middle lane. The ground below it is empty. High air above it is empty.';
+      }
+    default: // small_cactus
+      return isGroup
+        ? 'Pair of cacti growing UP FROM THE GROUND side by side. Together they form a wider wall. Rooted in dirt.'
+        : 'Small cactus growing UP FROM THE GROUND. It blocks the low lane. Nothing above it.';
+  }
 }
 
 function isValidState(state) {
