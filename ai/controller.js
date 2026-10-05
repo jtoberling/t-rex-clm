@@ -379,6 +379,30 @@ export class AiController {
         };
       }
 
+      // If the model's answer is ready but we're still FAR from the optimal
+      // jump/duck point, hold back to improve timing precision. The reference
+      // implementation (examples/t_rex) observes measured latency and delays
+      // execution until the answer's landing frame aligns with the safe window.
+      // Without that machinery, approximate: if the obstacle is >40% of the
+      // threshold distance away, defer the action slightly.
+      if (plan.status === 'ready') {
+        const distFromOptimal = threshold - plan.obstacle.xPos;
+        const thresholdSpan = threshold - dinosaurX;
+        if (
+          thresholdSpan > 0 &&
+          distFromOptimal / thresholdSpan > 0.4 &&
+          action !== 'keep_running'
+        ) {
+          this.latestStatus = {
+            type: 'holding',
+            message: `Holding for better timing (${Math.round(
+              distFromOptimal / thresholdSpan * 100
+            )}% to go)`,
+          };
+          continue;
+        }
+      }
+
       if (plan.status !== 'ready') {
         continue;
       }

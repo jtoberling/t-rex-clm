@@ -20,10 +20,18 @@ export function describeFlightPath(obstacle) {
 }
 
 export function buildDecisionState(obstacle, snapshot) {
+  const dinoX = snapshot.dinosaur?.xPos ?? 0;
+  const distPx = Math.max(0, Math.round(obstacle.xPos - dinoX));
+  const speedUnitsPerFrame = snapshot.speed;
+  const framesUntilReach =
+    speedUnitsPerFrame > 0 ? Math.round(distPx / speedUnitsPerFrame) : Infinity;
+
   return {
     speed: Number(snapshot.speed.toFixed(2)),
     speedMode: snapshot.speedMode,
     dinosaurMotion: snapshot.dinosaurMotion,
+    distance_px: distPx,
+    est_frames_until_reach: framesUntilReach,
     obstacle: {
       kind: KIND_NAMES[obstacle.typeConfig.type],
       group: GROUP_NAMES[Math.min(3, Math.max(1, obstacle.size))],

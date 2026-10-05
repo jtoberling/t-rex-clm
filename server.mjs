@@ -111,8 +111,12 @@ function buildState(state) {
   const kind = String(state?.obstacle?.kind ?? 'small_cactus');
   const group = String(state?.obstacle?.group ?? 'single');
   const flightPath = String(state?.obstacle?.flightPath ?? '');
+  const distPx = Number.isFinite(Number(state.distance_px)) ? Number(state.distance_px) : null;
+  const framesLeft = Number.isFinite(Number(state.est_frames_until_reach))
+    ? Number(state.est_frames_until_reach)
+    : null;
   return {
-    obstacle_scene: buildSceneText(kind, group, flightPath),
+    obstacle_scene: buildSceneText(kind, group, flightPath, distPx, framesLeft),
   };
 }
 
@@ -124,27 +128,37 @@ function buildState(state) {
  *  - "VERY LOW, almost touching the ground" distinguishes low ptero from mid
  *  - "WAY UP HIGH, far above the dino" triggers keep_running for high ptero
  */
-function buildSceneText(kind, group, flightPath) {
+function buildSceneText(kind, group, flightPath, distPx, framesLeft) {
   const isGroup = group !== 'single';
+  const timing =
+    framesLeft != null
+      ? ` The obstacle is ${distPx}px away, reaching the dino in about ${framesLeft} frames.`
+      : '';
 
   switch (kind) {
     case 'large_cactus':
-      return isGroup
-        ? 'Giant cacti growing UP FROM THE GROUND side by side. A wide, very tall wall. A quick tap will not clear their tops. Needs the full extended arc.'
-        : 'Giant cactus growing UP FROM THE GROUND. Very tall and thick. A quick tap won\'t clear its top. Needs the full extended arc.';
+      return (
+        (isGroup
+          ? 'Giant cacti growing UP FROM THE GROUND side by side. A wide, very tall wall. A quick tap will not clear their tops. Needs the full extended arc.'
+          : 'Giant cactus growing UP FROM THE GROUND. Very tall and thick. A quick tap won\'t clear its top. Needs the full extended arc.') +
+        timing
+      );
     case 'pterodactyl':
       switch (flightPath) {
         case 'clears_running_dinosaur':
-          return 'Bird hovering way up in the sky, nowhere near the dino. The dino can run straight underneath without any danger.';
+          return 'Bird hovering way up in the sky, nowhere near the dino. The dino can run straight underneath without any danger.' + timing;
         case 'blocks_running_and_ducking':
-          return 'Bird skimming VERY LOW, almost touching the ground. Its wingtips drag along the dirt surface. No gap underneath - not even for a ducking dino. Only the air ABOVE its wings is empty.';
+          return 'Bird skimming VERY LOW, almost touching the ground. Its wingtips drag along the dirt surface. No gap underneath - not even for a ducking dino. Only the air ABOVE its wings is empty.' + timing;
         default: // blocks_running_only (mid altitude)
-          return 'Bird floating MID AIR at head height. It blocks the middle lane. The ground below it is empty. High air above it is empty.';
+          return 'Bird floating MID AIR at head height. It blocks the middle lane. The ground below it is empty. High air above it is empty.' + timing;
       }
     default: // small_cactus
-      return isGroup
-        ? 'Pair of cacti growing UP FROM THE GROUND side by side. Together they form a wider wall. Rooted in dirt.'
-        : 'Small cactus growing UP FROM THE GROUND. It blocks the low lane. Nothing above it.';
+      return (
+        (isGroup
+          ? 'Pair of cacti growing UP FROM THE GROUND side by side. Together they form a wider wall. Rooted in dirt.'
+          : 'Small cactus growing UP FROM THE GROUND. It blocks the low lane. Nothing above it.') +
+        timing
+      );
   }
 }
 
